@@ -114,8 +114,7 @@ int main()
             double yawd = ukf.x_[4];
 
             // predicted state values over dt seconds later
-            double distance_difference = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));
-            double target_x_p, target_y_p;
+            double distance_difference = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));            
             double dt = 0.5; // can be tuned
             if (distance_difference > 0.5)
             {               
@@ -131,7 +130,6 @@ int main()
                     target_y = target_y + v * dt * sin(yaw);
                 }
             }
-
             double heading_to_target = atan2(target_y - hunter_y, target_x - hunter_x);
             while (heading_to_target > M_PI)
                 heading_to_target -= 2. * M_PI;
@@ -143,6 +141,11 @@ int main()
                 heading_difference -= 2. * M_PI;
             while (heading_difference < -M_PI)
                 heading_difference += 2. * M_PI;           
+            
+            if (distance_difference < 0.5)
+            {
+                heading_difference = -hunter_heading;
+            }
 
             json msgJson;
             msgJson["turn"] = heading_difference;
