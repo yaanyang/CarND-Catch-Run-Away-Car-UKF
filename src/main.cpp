@@ -115,11 +115,8 @@ int main()
 
             // predicted state values over dt seconds later
             double distance_difference = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));            
-            double dt = 0.5; // can be tuned
-            if (distance_difference < 0.5)
-            {
-                dt = 0.1;
-            }
+            double dt = 0.1; // can be tuned
+            
             // avoid division by zero
             if (fabs(yawd) > 0.001)
             {
