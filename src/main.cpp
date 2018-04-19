@@ -114,27 +114,25 @@ int main()
             double yawd = ukf.x_[4];
 
             // predicted state values over dt seconds later
-            double distance_diff = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));
+            double distance_difference = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));
             double target_x_p, target_y_p;
             double dt = 0.5; // can be tuned
-            if (distance_diff < 0.5)
-            {
-                dt = 0.1;
+            if (distance_difference > 0.5)
+            {               
+                // avoid division by zero
+                if (fabs(yawd) > 0.001)
+                {
+                    target_x = target_x + v / yawd * (sin(yaw + yawd * dt) - sin(yaw));
+                    target_y = target_y + v / yawd * (cos(yaw) - cos(yaw + yawd * dt));
+                }
+                else
+                {
+                    target_x = target_x + v * dt * cos(yaw);
+                    target_y = target_y + v * dt * sin(yaw);
+                }
             }
 
-            // avoid division by zero
-            if (fabs(yawd) > 0.001)
-            {
-                target_x_p = target_x + v / yawd * (sin(yaw + yawd * dt) - sin(yaw));
-                target_y_p = target_y + v / yawd * (cos(yaw) - cos(yaw + yawd * dt));
-            }
-            else
-            {
-                target_x_p = target_x + v * dt * cos(yaw);
-                target_y_p = target_y + v * dt * sin(yaw);
-            }
-
-            double heading_to_target = atan2(target_y_p - hunter_y, target_x_p - hunter_x);
+            double heading_to_target = atan2(target_y - hunter_y, target_x - hunter_x);
             while (heading_to_target > M_PI)
                 heading_to_target -= 2. * M_PI;
             while (heading_to_target < -M_PI)
@@ -144,9 +142,7 @@ int main()
             while (heading_difference > M_PI)
                 heading_difference -= 2. * M_PI;
             while (heading_difference < -M_PI)
-                heading_difference += 2. * M_PI;
-
-            double distance_difference = sqrt((target_y_p - hunter_y) * (target_y_p - hunter_y) + (target_x_p - hunter_x) * (target_x_p - hunter_x));
+                heading_difference += 2. * M_PI;           
 
             json msgJson;
             msgJson["turn"] = heading_difference;
