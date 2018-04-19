@@ -106,8 +106,8 @@ int main()
 
             ukf.ProcessMeasurement(meas_package_R);
 
-            // extract target information
-            target_x = ukf.x_[0];
+            
+            target_x = -ukf.x_[0];
             target_y = ukf.x_[1];
             double v = ukf.x_[2];
             double yaw = ukf.x_[3];
@@ -115,19 +115,19 @@ int main()
 
             // predicted state values over dt seconds later
             double distance_difference = sqrt((target_y - hunter_y)*(target_y - hunter_y) + (target_x - hunter_x)*(target_x - hunter_x));            
-            double dt = 0.1; // can be tuned
+            //double dt = 0.5; // can be tuned
             
             // avoid division by zero
-            if (fabs(yawd) > 0.001)
-            {
-                target_x = target_x + v / yawd * (sin(yaw + yawd * dt) - sin(yaw));
-                target_y = target_y + v / yawd * (cos(yaw) - cos(yaw + yawd * dt));
-            }
-            else
-            {
-                target_x = target_x + v * dt * cos(yaw);
-                target_y = target_y + v * dt * sin(yaw);
-            }
+            //if (fabs(yawd) > 0.001)
+            //{
+            //    target_x = target_x + v / yawd * (sin(yaw + yawd * dt) - sin(yaw));
+            //    target_y = target_y + v / yawd * (cos(yaw) - cos(yaw + yawd * dt));
+            //}
+            //else
+            //{
+            //    target_x = target_x + v * dt * cos(yaw);
+            //    target_y = target_y + v * dt * sin(yaw);
+            //}
 
             double heading_to_target = atan2(target_y - hunter_y, target_x - hunter_x);
             while (heading_to_target > M_PI)
