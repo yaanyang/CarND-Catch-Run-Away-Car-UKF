@@ -118,7 +118,7 @@ int main()
             double dt = 0.5; // can be tuned
             if (distance_difference < 0.5)
             {
-                dt = -distance_difference;
+                dt = 0.1;
             }
             // avoid division by zero
             if (fabs(yawd) > 0.001)
