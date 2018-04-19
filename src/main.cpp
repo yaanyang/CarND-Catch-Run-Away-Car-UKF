@@ -115,7 +115,7 @@ int main()
 
             // predicted state values over dt seconds later
             double target_x_p, target_y_p;
-            double dt = 1.0; // can be tuned
+            double dt = 0.5; // can be tuned
 
             // avoid division by zero
             if (fabs(yawd) > 0.001)
